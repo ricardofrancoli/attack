@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import { queryAllAuditLogs } from "../services/audit.service";
+import { object, parse, string } from "valibot";
+import { queryAllAuditLogs, queryAuditLogById } from "../services/audit.service";
 
 export const deleteAuditLogById = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -21,8 +22,20 @@ export const getAuditLogs = async (req: Request, res: Response, next: NextFuncti
 
 export const getAuditLogById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    res.send("Get Audit Log By Id...");
-  } catch {
-    console.error("Oooops, error at Get Audit Log By Id...");
+    const { id } = parse(object({ id: string() }), req.params);
+
+    const auditLog = await queryAuditLogById(id);
+
+    if (!auditLog) {
+      res.status(404).json({
+        status: "error",
+        message: `Audit log with id ${id} not found`,
+      });
+      return;
+    }
+
+    res.status(200).json({ status: "success", data: auditLog });
+  } catch (err) {
+    console.error("Oooops, error at Get Audit Log By Id...", err);
   }
 };
