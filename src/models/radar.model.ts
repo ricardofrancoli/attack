@@ -32,7 +32,7 @@ const EnemiesProtocol = union([
 const AlliesProtocol = union([literal(Protocol.assistAllies), literal(Protocol.avoidCrossfire)]);
 const MechProtocol = union([literal(Protocol.prioritizeMech), literal(Protocol.avoidMech)]);
 
-const Coordinates = object({ x: number(), y: number() });
+export const Coordinates = object({ x: number(), y: number() });
 const Enemies = object({ type: union([literal("soldier"), literal("mech")]), number: number() });
 const Allies = number();
 
@@ -61,3 +61,4 @@ export const Radar = object({
 
 export type Radar = InferOutput<typeof Radar>;
 export type Scan = Radar["scan"];
+export type Coordinates = Radar["scan"][number]["coordinates"];

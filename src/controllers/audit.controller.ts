@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { queryAllAuditLogs } from "../services/audit.service";
 
 export const deleteAuditLogById = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -10,7 +11,9 @@ export const deleteAuditLogById = async (req: Request, res: Response, next: Next
 
 export const getAuditLogs = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    res.send("Get Audit Logs...");
+    const auditLogs = await queryAllAuditLogs();
+
+    res.status(200).json({ status: "success", data: auditLogs });
   } catch {
     console.error("Oooops, error at Get Audit Logs...");
   }
