@@ -27,4 +27,8 @@ export const queryAuditLogById = async (
   });
 };
 
-export const removeAuditLogById = async () => {};
+export const deleteOneAuditLogById = async (id: string): Promise<boolean> => {
+  const result = await db.radarCalculations.deleteOne({ _id: new ObjectId(id) });
+
+  return result.deletedCount === 1;
+};

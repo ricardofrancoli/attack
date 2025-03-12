@@ -1,10 +1,29 @@
 import type { NextFunction, Request, Response } from "express";
 import { object, parse, string } from "valibot";
-import { queryAllAuditLogs, queryAuditLogById } from "../services/audit.service";
+import {
+  deleteOneAuditLogById,
+  queryAllAuditLogs,
+  queryAuditLogById,
+} from "../services/audit.service";
 
 export const deleteAuditLogById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    res.send("Delete Audit Log By Id...");
+    const { id } = parse(object({ id: string() }), req.params);
+
+    const isDeleted = await deleteOneAuditLogById(id);
+
+    if (!isDeleted) {
+      res.status(404).json({
+        status: "error",
+        message: `No audit log found with id ${id}`,
+      });
+      return;
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: `Audit log with id ${id} successfully deleted`,
+    });
   } catch {
     console.error("Oooops, error at Delete Audit Log By Id...");
   }
