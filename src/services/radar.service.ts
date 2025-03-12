@@ -17,7 +17,7 @@ const sortCoordinatesByVicinity = (scan: Scan, order: "asc" | "desc"): Scan => {
   });
 };
 
-export const saveRadarCoordinates = async (
+export const insertOneRadarCoordinates = async (
   radar: Radar,
 ): Promise<Scan[number]["coordinates"] | undefined> => {
   const { protocols, scan } = radar;

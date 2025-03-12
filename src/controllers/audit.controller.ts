@@ -2,8 +2,8 @@ import type { NextFunction, Request, Response } from "express";
 import { object, parse, string } from "valibot";
 import {
   deleteOneAuditLogById,
-  queryAllAuditLogs,
-  queryAuditLogById,
+  findAllAuditLogs,
+  findOneAuditLogById,
 } from "../services/audit.service";
 
 export const deleteAuditLogById = async (req: Request, res: Response, next: NextFunction) => {
@@ -31,7 +31,7 @@ export const deleteAuditLogById = async (req: Request, res: Response, next: Next
 
 export const getAuditLogs = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const auditLogs = await queryAllAuditLogs();
+    const auditLogs = await findAllAuditLogs();
 
     res.status(200).json({ status: "success", data: auditLogs });
   } catch {
@@ -43,7 +43,7 @@ export const getAuditLogById = async (req: Request, res: Response, next: NextFun
   try {
     const { id } = parse(object({ id: string() }), req.params);
 
-    const auditLog = await queryAuditLogById(id);
+    const auditLog = await findOneAuditLogById(id);
 
     if (!auditLog) {
       res.status(404).json({
