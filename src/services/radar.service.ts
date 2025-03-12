@@ -74,7 +74,7 @@ export const insertOneRadarCoordinates = async (
 
   const coordinates = filteredScan[0].coordinates;
 
-  await db.radarCalculations.insertOne(coordinates);
+  await db.radarCalculations.insertOne({ ...coordinates });
 
   return coordinates;
 };

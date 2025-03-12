@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Routes
-app.use("/api", routes);
+app.use(routes);
 
 const startServer = async () => {
   try {
