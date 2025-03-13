@@ -1,5 +1,6 @@
 import express from "express";
 import db from "./db/initialise";
+import { errorHandler } from "./middleware/error.middleware";
 import routes from "./routes";
 
 const app = express();
@@ -9,6 +10,9 @@ app.use(express.json());
 
 // Routes
 app.use(routes);
+
+// Middleware
+app.use(errorHandler);
 
 const startServer = async () => {
   try {

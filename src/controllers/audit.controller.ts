@@ -24,18 +24,20 @@ export const deleteAuditLogById = async (req: Request, res: Response, next: Next
       status: "success",
       message: `Audit log with id ${id} successfully deleted`,
     });
-  } catch {
+  } catch (err) {
     console.error("Oooops, error at Delete Audit Log By Id...");
+    next(err);
   }
 };
 
-export const getAuditLogs = async (req: Request, res: Response, next: NextFunction) => {
+export const getAuditLogs = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const auditLogs = await findAllAuditLogs();
 
     res.status(200).json({ status: "success", data: auditLogs });
-  } catch {
+  } catch (err) {
     console.error("Oooops, error at Get Audit Logs...");
+    next(err);
   }
 };
 
@@ -55,6 +57,7 @@ export const getAuditLogById = async (req: Request, res: Response, next: NextFun
 
     res.status(200).json({ status: "success", data: auditLog });
   } catch (err) {
-    console.error("Oooops, error at Get Audit Log By Id...", err);
+    console.error("Oooops, error at Get Audit Log By Id...");
+    next(err);
   }
 };

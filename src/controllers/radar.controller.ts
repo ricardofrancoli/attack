@@ -12,5 +12,6 @@ export const createRadarCoordinates = async (req: Request, res: Response, next: 
     res.status(200).json(coordinates);
   } catch (err) {
     console.error("Oooops, error at Create Radar Coordinates...", err);
+    next(err);
   }
 };
