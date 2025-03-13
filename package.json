@@ -5,9 +5,15 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx --env-file=.env --watch ./src/index.ts",
+    "start": "tsx --env-file=.env ./src/index.ts",
+    "start:test": "NODE_ENV=test tsx --env-file=.env ./src/index.ts",
     "lint": "biome check --write",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:audit": "tsx ./scripts/runAuditTests.ts all",
+    "test:audit:getAll": "tsx ./scripts/runAuditTests.ts getAll",
+    "test:audit:getOne": "tsx ./scripts/runAuditTests.ts getOne",
+    "test:audit:deleteOne": "tsx ./scripts/runAuditTests.ts deleteOne"
   },
   "keywords": [],
   "author": "",

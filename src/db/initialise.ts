@@ -8,12 +8,20 @@ class Database {
 
   private _radarCalculations: Collection | null = null;
 
-  private uri: string = parse(string(), process.env.MONGODB_URI, {
-    message: "MongoDB URI not defined in env",
-  });
-  private dbName: string = parse(string(), process.env.DB_NAME, {
-    message: "DB name not defined in env",
-  });
+  private uri: string = parse(
+    string(),
+    process.env.NODE_ENV === "test" ? process.env.MONGODB_URI_TEST : process.env.MONGODB_URI,
+    {
+      message: "MongoDB URI not defined in env",
+    },
+  );
+  private dbName: string = parse(
+    string(),
+    process.env.NODE_ENV === "test" ? process.env.DB_NAME_TEST : process.env.DB_NAME,
+    {
+      message: "DB name not defined in env",
+    },
+  );
 
   private constructor() {}
 
