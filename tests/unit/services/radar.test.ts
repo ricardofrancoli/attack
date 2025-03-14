@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { Protocol, type Scan } from "../../../src/models/radar.model";
-import { insertOneRadarCoordinates } from "../../../src/services/radar.service";
+import { getRadarCoordinates } from "../../../src/services/radar.service";
 
-describe("insertOneRadarCoordinates", () => {
+describe("getRadarCoordinates", () => {
   const mechFurthest: Scan[number] = {
     coordinates: { x: 70, y: -70 },
     enemies: { type: "mech", number: 12 },
@@ -32,7 +32,7 @@ describe("insertOneRadarCoordinates", () => {
 
   describe("Distance-based targeting", () => {
     it("should return furthest scan with furthest-enemies protocol", () => {
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.furthestEnemies],
         scan: [mechFurthest, mechClosest, soldierMid],
       });
@@ -41,7 +41,7 @@ describe("insertOneRadarCoordinates", () => {
     });
 
     it("should return closest scan with closest-enemies protocol", () => {
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.closestEnemies],
         scan: [mechFurthest, mechClosest, soldierMid],
       });
@@ -52,7 +52,7 @@ describe("insertOneRadarCoordinates", () => {
 
   describe("Enemy type filtering", () => {
     it("should avoid mech enemies with avoid-mech protocol", () => {
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.avoidMech],
         scan: [mechFurthest, mechClosest, soldierMid],
       });
@@ -61,7 +61,7 @@ describe("insertOneRadarCoordinates", () => {
     });
 
     it("should prioritize mech enemies with prioritize-mech protocol", () => {
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.prioritizeMech],
         scan: [soldierMid, mechClosest],
       });
@@ -70,7 +70,7 @@ describe("insertOneRadarCoordinates", () => {
     });
 
     it("should return undefined if no valid targets after applying avoid-mech", () => {
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.avoidMech],
         scan: [mechFurthest, mechClosest],
       });
@@ -81,7 +81,7 @@ describe("insertOneRadarCoordinates", () => {
 
   describe("Ally-based targeting", () => {
     it("should prioritize positions with allies when using assist-allies protocol", () => {
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.assistAllies],
         scan: [scanWithAllies, scanWithoutAllies],
       });
@@ -90,7 +90,7 @@ describe("insertOneRadarCoordinates", () => {
     });
 
     it("should avoid positions with allies when using avoid-crossfire protocol", () => {
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.avoidCrossfire],
         scan: [scanWithAllies, scanWithoutAllies],
       });
@@ -101,7 +101,7 @@ describe("insertOneRadarCoordinates", () => {
 
   describe("Combined protocols", () => {
     it("should correctly apply multiple protocols in order", () => {
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.avoidMech, Protocol.closestEnemies],
         scan: [
           mechFurthest,
@@ -119,7 +119,7 @@ describe("insertOneRadarCoordinates", () => {
       const nearMech = { ...mechClosest };
       const farMech = { ...mechFurthest };
 
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.prioritizeMech, Protocol.furthestEnemies],
         scan: [nearMech, farMech, soldierMid],
       });
@@ -167,7 +167,7 @@ describe("insertOneRadarCoordinates", () => {
     };
 
     it("should prioritize assist-allies over closest-enemies", () => {
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.assistAllies, Protocol.closestEnemies],
         scan: [nearSoldierWithAllies, farSoldierWithoutAllies, mediumSoldierWithoutAllies],
       });
@@ -184,7 +184,7 @@ describe("insertOneRadarCoordinates", () => {
         allies: 1,
       };
 
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.assistAllies, Protocol.closestEnemies],
         scan: [nearWithAllies, farWithAllies, mediumSoldierWithoutAllies],
       });
@@ -194,7 +194,7 @@ describe("insertOneRadarCoordinates", () => {
     });
 
     it("should apply avoid-mech before furthest-enemies", () => {
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.avoidMech, Protocol.furthestEnemies],
         scan: [nearMech, farMech, mediumSoldierWithoutAllies, farSoldierWithoutAllies],
       });
@@ -204,7 +204,7 @@ describe("insertOneRadarCoordinates", () => {
     });
 
     it("should prioritize avoid-crossfire over prioritize-mech", () => {
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.avoidCrossfire, Protocol.prioritizeMech],
         scan: [nearMech, soldierWithAllies],
       });
@@ -215,7 +215,7 @@ describe("insertOneRadarCoordinates", () => {
 
     it("should handle all three protocol groups together", () => {
       // Distance protocol + Allies protocol + Mech protocol
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.closestEnemies, Protocol.avoidCrossfire, Protocol.avoidMech],
         scan: [
           nearMech,
@@ -236,7 +236,7 @@ describe("insertOneRadarCoordinates", () => {
 
     it("should return undefined when combined protocols filter out all targets", () => {
       // Combination that leaves no valid targets
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.avoidCrossfire, Protocol.avoidMech],
         scan: [nearMech, farMech, nearSoldierWithAllies, soldierWithAllies],
       });
@@ -248,7 +248,7 @@ describe("insertOneRadarCoordinates", () => {
 
   describe("Distance exclusions and inclusions", () => {
     it("should filter out targets beyond 100m regardless of protocols", () => {
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.closestEnemies],
         scan: [
           {
@@ -268,7 +268,7 @@ describe("insertOneRadarCoordinates", () => {
     });
 
     it("should return undefined if all targets are beyond 100m", () => {
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.closestEnemies],
         scan: [
           {
@@ -300,7 +300,7 @@ describe("insertOneRadarCoordinates", () => {
         enemies: { type: "soldier", number: 10 },
       };
 
-      const coordinates = insertOneRadarCoordinates({
+      const coordinates = getRadarCoordinates({
         protocols: [Protocol.closestEnemies],
         scan: [target1, target2],
       });

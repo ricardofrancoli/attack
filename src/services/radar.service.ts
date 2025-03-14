@@ -1,5 +1,5 @@
 import db from "../db/initialise";
-import { Protocol, type Radar, type Scan } from "../models/radar.model";
+import { type Coordinates, Protocol, type Radar, type Scan } from "../models/radar.model";
 
 const calculateDistance = (scan: Scan[number]): number => {
   const { x, y } = scan.coordinates;
@@ -17,9 +17,7 @@ const sortCoordinatesByVicinity = (scan: Scan, order: "asc" | "desc"): Scan => {
   });
 };
 
-export const insertOneRadarCoordinates = async (
-  radar: Radar,
-): Promise<Scan[number]["coordinates"] | undefined> => {
+export const getRadarCoordinates = (radar: Radar): Coordinates | undefined => {
   const { protocols, scan } = radar;
 
   if (scan.length === 0) {
@@ -72,7 +70,11 @@ export const insertOneRadarCoordinates = async (
     filteredScan = sortCoordinatesByVicinity(filteredScan, "desc");
   }
 
-  const coordinates = filteredScan[0].coordinates;
+  return filteredScan[0].coordinates;
+};
+
+export const insertOneRadarCoordinates = async (radar: Radar): Promise<Coordinates | undefined> => {
+  const coordinates = getRadarCoordinates(radar);
 
   await db.radarCalculations.insertOne({ ...coordinates });
 
