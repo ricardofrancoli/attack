@@ -1,7 +1,7 @@
 import type { Radar } from "../src/models/radar.model";
 import { radars } from "./data/radars";
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8888;
 const BASE_URL = `http://localhost:${PORT}`;
 
 const colors = {
