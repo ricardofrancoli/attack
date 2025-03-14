@@ -27,7 +27,7 @@ The application uses a separate test database to avoid interfering with developm
 
 ```bash
 # Start the server in test mode
-npm run start:test
+pnpm run start:test
 ```
 
 This runs the server with `NODE_ENV=test`, connecting to the `attack-test` database.
@@ -43,13 +43,13 @@ Each script:
 
 ```bash
 # Test retrieving all audit entries
-npm run audit:getAll
+pnpm run test:audit:getAll
 
 # Test retrieving a specific audit entry
-npm run audit:getOne
+pnpm run test:audit:getOne
 
 # Test deleting an audit entry
-npm run audit:deleteOne
+pnpm run test:audit:deleteOne
 ```
 
 ### Option 2: Run Complete Test Suite
@@ -57,18 +57,18 @@ npm run audit:deleteOne
 For convenience, run all tests in sequence:
 
 ```bash
-npm run test:audit
+pnpm run test:audit
 ```
 
 ## Expected Results
 
 ### GET /audit
 - Returns an array of audit entries
-- Each entry should have an `_id`, `timestamp`, `action`, and related data
+- Each entry should have an `_id` and `x` and `y` coordinates
 
 ### GET /audit/:id
 - Returns a single audit entry with complete details
-- Should match the format of entries from the getAll endpoint
+- Should match the format of entries from the `getAll` endpoint
 
 ### DELETE /audit/:id
 - Removes the specified entry
